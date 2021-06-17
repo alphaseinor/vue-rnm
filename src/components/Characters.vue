@@ -6,7 +6,7 @@
             </article>
         </section>
         <section>
-            <Paginate v-bind:currentPage="currentPage" v-bind:totalPages="totalPages" />
+            <Paginate :currentPage="currentPage" :totalPages="totalPages" :pageArray="pageArray"/>
         </section>
     </main>
 </template>
@@ -23,13 +23,14 @@ export default {
             characters: [],
             characterNum: 0,
             endpoint: "/character/",
-            currentPage: 1,
+            currentPage: 34,
             totalPages: 0,
             name: "",
             gender: "",
             status: "",
             types: [],
             selectedType: "",
+            pageArray: []
         }
     },
     props: ["baseURL"],
@@ -79,12 +80,14 @@ export default {
             .then(({data}) => {
                 this.characters = data.results
                 this.totalPages = data.info.pages
+                this.pageArray = Array.from({length: data.info.pages}, (v, i) => i+1)
                 this.characterNum = data.info.count
                 data.results.forEach(character => {
                     if(character.type !== ""){
                         this.types = [...this.types, character]
                     }
                 })
+
             })
     }
 }

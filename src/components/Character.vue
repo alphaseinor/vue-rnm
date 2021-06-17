@@ -7,7 +7,7 @@
         <p>{{character.name}} is originally from {{character.origin.name}} and is currently in {{character.location.name}}</p>
         <h3>Episodes {{character.name}} is in:</h3>
         <div>
-            <CharacterEpisode v-bind:episode="episode" v-for="episode in episodes" v-bind:key="episode.id" />
+            <CharacterEpisode class="hide" v-bind:episode="episode" v-for="episode in episodes" v-bind:key="episode.id" />
         </div>
     </article>
 </template>
@@ -49,5 +49,7 @@ export default {
 </script>
 
 <style scoped>
-
+    .hide{
+        display: none;
+    }
 </style>
