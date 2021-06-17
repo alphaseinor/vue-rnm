@@ -6,7 +6,9 @@
         <p>Who's status is {{character.status}}</p>
         <p>{{character.name}} is originally from {{character.origin.name}} and is currently in {{character.location.name}}</p>
         <h3>Episodes {{character.name}} is in:</h3>
-        <CharacterEpisode v-bind:episode="episode" v-for="episode in episodes" v-bind:key="episode.id" />
+        <div>
+            <CharacterEpisode v-bind:episode="episode" v-for="episode in episodes" v-bind:key="episode.id" />
+        </div>
     </article>
 </template>
 
