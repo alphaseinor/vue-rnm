@@ -6,7 +6,7 @@
             </article>
         </section>
         <section>
-            <Paginate :currentPage="currentPage" :totalPages="totalPages" :pageArray="pageArray"/>
+            <Paginate v-on:changePage="changePage" :currentPage="currentPage" :totalPages="totalPages" :pageArray="pageArray"/>
         </section>
     </main>
 </template>
@@ -23,7 +23,7 @@ export default {
             characters: [],
             characterNum: 0,
             endpoint: "/character/",
-            currentPage: 34,
+            currentPage: 1,
             totalPages: 0,
             name: "",
             gender: "",
@@ -39,6 +39,10 @@ export default {
         Paginate
     },
     methods: {
+        changePage(newPage){
+            this.currentPage = newPage
+            this.getData()
+        },
         parseURL(){
             let tempParse = []
             // figure out if we need a ? or a &
@@ -73,22 +77,25 @@ export default {
 
             //stringify the array
             return tempParse.join("")
+        },
+        getData(){
+            axios.get(this.parseURL())
+                .then(({data}) => {
+                    this.characters = data.results
+                    this.totalPages = data.info.pages
+                    this.pageArray = Array.from({length: data.info.pages}, (v, i) => i+1)
+                    this.characterNum = data.info.count
+                    data.results.forEach(character => {
+                        if(character.type !== ""){
+                            this.types = [...this.types, character]
+                        }
+                    })
+    
+                })
         }
     },
     created() {
-        axios.get(this.parseURL())
-            .then(({data}) => {
-                this.characters = data.results
-                this.totalPages = data.info.pages
-                this.pageArray = Array.from({length: data.info.pages}, (v, i) => i+1)
-                this.characterNum = data.info.count
-                data.results.forEach(character => {
-                    if(character.type !== ""){
-                        this.types = [...this.types, character]
-                    }
-                })
-
-            })
+        this.getData()
     }
 }
 

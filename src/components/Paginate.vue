@@ -18,9 +18,9 @@
 
  <template>
      <div class="paginate-list">
-        <button v-bind:disabled="start">Previous</button>
-        <button :key="page" v-for="page in pageArray" :class="currentpage == page && 'current'" >{{page}}</button>
-         <button v-bind:disabled="end">Next</button>
+        <button @click="$emit('changePage', currentPage - 1)" v-bind:disabled="checkStart">Previous</button>
+        <button @click="$emit('changePage', page)" :key="page" v-for="page in pageArray" :class="currentPage == page && 'current'" >{{page}}</button>
+         <button @click="$emit('changePage', currentPage + 1)" v-bind:disabled="checkEnd">Next</button>
      </div>
  </template>
 <script>
@@ -28,35 +28,36 @@
 export default {
     name: "Paginate",
     props: ["currentPage","totalPages", "pageArray"],
-    data() {
-        return {
-            computedPage: 1,
-            start: false,
-            end: false
-        }
-    },
-    methods: {
+    computed: {
         checkStart(){
-            if(this.currentPage <= 1){
-                this.computedPage = 1
-                this.start = true
+            let isTrue = true
+            if(this.currentPage > 1){
+                isTrue = false
             }
+            return isTrue
         },
         checkEnd(){
-            if(this.currentPage >= this.totalPages ){
-                this.computedPage = this.pageArray.length
-                this.end = true;
+            let isTrue = true
+            if(this.currentPage < this.totalPages ){
+                isTrue = false
             }
+            return isTrue
         },
-        
+        checkSamePage(page){
+            let isTrue = true
+            if(this.currentPage == page ){
+                isTrue = false
+            }
+            return isTrue
+        }
     },
-    computed: {
-    },
-    created(){
-        this.computedPage = this.currentPage
-        this.arrayFinished = true
-        this.checkStart()
-        this.checkEnd()
-    }
 }
 </script>
+
+<style scoped>
+    .current{
+        border: 2px solid purple;
+        background: none;
+        font-weight: bolder;
+    }
+</style>
