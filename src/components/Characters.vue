@@ -1,13 +1,19 @@
 <template>
-    <section>
-        <article v-bind:key="character.id" v-for="character in characters">
-            <Character v-bind:character="character" />
-        </article>
-    </section>
+    <main>
+        <section>
+            <article v-bind:key="character.id" v-for="character in characters">
+                <Character v-bind:character="character" />
+            </article>
+        </section>
+        <section>
+            <Paginate v-bind:currentPage="currentPage" v-bind:totalPages="totalPages" />
+        </section>
+    </main>
 </template>
 
 <script>
 import Character from './Character.vue'
+import Paginate from './Paginate.vue'
 import axios from 'axios'
 
 export default {
@@ -17,7 +23,6 @@ export default {
             characters: [],
             characterNum: 0,
             endpoint: "/character/",
-            parsedURL: "",
             currentPage: 1,
             totalPages: 0,
             name: "",
@@ -25,66 +30,62 @@ export default {
             status: "",
             types: [],
             selectedType: "",
-            tempParse: []
         }
     },
     props: ["baseURL"],
     components: {
-        Character
+        Character,
+        Paginate
     },
     methods: {
-        
-    },
-    created() {
-        const parseURL = () => {
-    
+        parseURL(){
+            let tempParse = []
             // figure out if we need a ? or a &
             const qOrA = () => {
-                return this.tempParse.length > 2 ? "&" : "?"
+                return tempParse.length > 2 ? "&" : "?"
             }
             
             // concatenate our baseURL with our endpoint
-            this.tempParse = [this.baseURL, this.endpoint]
+            tempParse = [this.baseURL, this.endpoint]
     
             // adds page to the list if more than 1
             if (this.currentPage > 1){
-                this.tempParse = [...this.tempParse, qOrA(), "page=", this.currentPage]
+                tempParse = [...tempParse, qOrA(), "page=", this.currentPage]
             }
     
             // adds name to the list if not empty
             if (this.name !== ""){
-                this.tempParse = [...this.tempParse, qOrA(), "name=", this.name]
+                tempParse = [...tempParse, qOrA(), "name=", this.name]
             }
     
             if (this.gender !== ""){
-                this.tempParse = [...this.tempParse, qOrA(), "gender=", this.gender]
+                tempParse = [...tempParse, qOrA(), "gender=", this.gender]
             }
     
             if (this.status !== ""){
-                this.tempParse = [...this.tempParse, qOrA(), "status=", this.status]
+                tempParse = [...tempParse, qOrA(), "status=", this.status]
             }
 
             if (this.type !== ""){
-                this.tempParse = [...this.tempParse, qOrA(), "type=", this.selectedType]
+                tempParse = [...tempParse, qOrA(), "type=", this.selectedType]
             }
 
             //stringify the array
-            this.parsedURL = this.tempParse.join("")
+            return tempParse.join("")
         }
-        
-        parseURL()
-        // `${this.baseURL}${this.endpoint}?page=${this.currentPage}&${this.name !== "" && `name=${this.name}`}&$gender=${this.gender}&status=${status}&type=${this.selectedType}`
-        axios.get(this.parsedURL)
-        .then(({data}) => {
-            this.characters = data.results
-            this.totalPages = data.info.pages
-            this.characterNum = data.info.count
-            this.data.results.forEach(character => {
-                if(character.type !== ""){
-                    this.types = [...this.types, character]
-                }
+    },
+    created() {
+        axios.get(this.parseURL())
+            .then(({data}) => {
+                this.characters = data.results
+                this.totalPages = data.info.pages
+                this.characterNum = data.info.count
+                data.results.forEach(character => {
+                    if(character.type !== ""){
+                        this.types = [...this.types, character]
+                    }
+                })
             })
-        })
     }
 }
 
