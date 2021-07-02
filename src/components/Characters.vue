@@ -1,12 +1,12 @@
 <template>
     <main>
         <section>
-            <article v-bind:key="character.id" v-for="character in characters">
+            <Paginate v-on:changePage="changePage" :currentPage="currentPage" :totalPages="totalPages" :pageArray="pageArray"/>
+        </section>
+        <section class="flex flex-wrap justify-evenly">
+            <article class="border-solid p-4ß" style="width:300px;" v-bind:key="character.id" v-for="character in characters">
                 <Character v-bind:character="character" />
             </article>
-        </section>
-        <section>
-            <Paginate v-on:changePage="changePage" :currentPage="currentPage" :totalPages="totalPages" :pageArray="pageArray"/>
         </section>
     </main>
 </template>
