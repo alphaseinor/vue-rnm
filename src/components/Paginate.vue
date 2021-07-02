@@ -17,10 +17,10 @@
  */
 
  <template>
-     <div class="paginate-list">
-        <button @click="$emit('changePage', currentPage - 1)" v-bind:disabled="checkStart">Previous</button>
-        <button @click="$emit('changePage', page)" :key="page" v-for="page in pageArray" :class="currentPage == page && 'current'" >{{page}}</button>
-         <button @click="$emit('changePage', currentPage + 1)" v-bind:disabled="checkEnd">Next</button>
+     <div class="flex flex-wrap justify-center">
+        <button class="p-2" @click="$emit('changePage', currentPage - 1)" v-bind:disabled="checkStart">Previous</button>
+        <button class="p-2" @click="$emit('changePage', page)" :key="page" v-for="page in pageArray" :class="currentPage == page && 'current'" >{{page}}</button>
+         <button class="p-2" @click="$emit('changePage', currentPage + 1)" v-bind:disabled="checkEnd">Next</button>
      </div>
  </template>
 <script>
